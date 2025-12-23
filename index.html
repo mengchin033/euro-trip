@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>波斯匈深度 15 日旅遊手冊</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #d35400;
+            --sidebar-width: 280px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif; 
+            margin: 0; background: #f2f2f2; color: #333; scroll-behavior: smooth;
+        }
+
+        /* 頂部 Header */
+        .top-header {
+            position: fixed; top: 0; width: 100%; height: 50px;
+            background: var(--primary); color: white;
+            display: flex; align-items: center; padding: 0 15px;
+            z-index: 1001; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .menu-toggle { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; margin-right: 15px; }
+
+        /* 縮放側邊欄 */
+        .sidebar {
+            position: fixed; left: calc(-1 * var(--sidebar-width)); top: 0;
+            width: var(--sidebar-width); height: 100%;
+            background: #fff; z-index: 1002; transition: 0.3s ease;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1); overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header { background: var(--primary); color: white; padding: 20px; font-weight: bold; }
+        .side-nav-link { display: block; padding: 12px 20px; color: #333; text-decoration: none; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; display: none; }
+        .overlay.active { display: block; }
+
+        /* 內容區 */
+        .page { display: none; padding: 60px 15px 120px 15px; max-width: 800px; margin: 0 auto; }
+        .page.active { display: block; animation: fadeIn 0.3s; }
+
+        section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        h2 { color: var(--accent); border-bottom: 2px solid #f9f9f9; padding-bottom: 10px; margin-top: 0; font-size: 1.3rem; }
+        .spot-title { font-weight: bold; color: #2980b9; display: block; margin: 15px 0 5px 0; border-left: 4px solid var(--accent); padding-left: 10px; font-size: 1.1rem; }
+        .desc { line-height: 1.8; text-align: justify; font-size: 0.95rem; color: #444; }
+        .tour-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; margin: 15px 0; background: #ddd; }
+
+        /* 卡片與標籤樣式 */
+        .info-card { background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 15px; }
+        .food-tag { display: inline-block; background: #e67e22; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 5px; }
+
+        /* 底部導航 */
+        .bottom-tabs { position: fixed; bottom: 0; width: 100%; height: 75px; background: white; display: flex; border-top: 1px solid #ddd; z-index: 1000; }
+        .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: #7f8c8d; font-size: 0.65rem; padding: 5px 0; }
+        .tab-item.active { color: var(--accent); font-weight: bold; }
+        .tab-icon { font-size: 1.3rem; margin-bottom: 2px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header class="top-header" id="main-header">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <span id="header-title">波斯匈深度 15 日之旅</span>
+    </header>
+
+    <div class="overlay" onclick="toggleSidebar()"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">每日行程跳轉</div>
+        <a href="#d1" class="side-nav-link" onclick="closeSidebar('D1 啟程')">Day 1：啟程</a>
+        <a href="#d2" class="side-nav-link" onclick="closeSidebar('D2 華沙')">Day 2：華沙市區觀光</a>
+        <a href="#d3" class="side-nav-link" onclick="closeSidebar('D3 華沙深度')">Day 3：華沙新舊城區深度</a>
+        <a href="#d4" class="side-nav-link" onclick="closeSidebar('D4 托倫')">Day 4：托倫與馬爾堡城堡</a>
+        <a href="#d5" class="side-nav-link" onclick="closeSidebar('D5 波羅的海')">Day 5：索波特與格但斯克</a>
+        <a href="#d6" class="side-nav-link" onclick="closeSidebar('D6 克拉科夫')">Day 6：克拉科夫舊都風華</a>
+        <a href="#d7" class="side-nav-link" onclick="closeSidebar('D7 彩繪村')">Day 7：薩利派彩繪村之旅</a>
+        <a href="#d8" class="side-nav-link" onclick="closeSidebar('D8 札科帕內')">Day 8：札科帕內童話鎮</a>
+        <a href="#d9" class="side-nav-link" onclick="closeSidebar('D9 城堡之旅')">Day 9：博伊尼采與礦山城</a>
+        <a href="#d10" class="side-nav-link" onclick="closeSidebar('D10 布拉提拉瓦')">Day 10：布拉提拉瓦巡禮</a>
+        <a href="#d11" class="side-nav-link" onclick="closeSidebar('D11 聖安德烈')">Day 11：聖安德烈古鎮</a>
+        <a href="#d12" class="side-nav-link" onclick="closeSidebar('D12 布達佩斯')">Day 12：布達佩斯精華</a>
+        <a href="#d13" class="side-nav-link" onclick="closeSidebar('D13 雙城遊')">Day 13：布達佩斯深度與鎖鏈橋</a>
+        <a href="#d14" class="side-nav-link" onclick="closeSidebar('D14 自由行')">Day 14：最後巡禮與回程</a>
+        <a href="#d15" class="side-nav-link" onclick="closeSidebar('D15 抵台')">Day 15：返抵桃園</a>
+    </nav>
+
+    <div id="itinerary-page" class="page active">
+        <section id="d1">
+            <h2>Day 1：出發 ─ 夢想飛行</h2>
+            <p class="desc">今日備妥行李，帶著期待的心情飛往波蘭華沙。在飛機上休息，準備迎接 15 天的藝術與歷史洗禮。</p>
+        </section>
+
+        <section id="d2">
+            <h2>Day 2：華沙市區觀光</h2>
+            <p class="desc">首先來到重建後的**華沙皇宮**，紅磚外觀莊嚴典雅。漫步在老城的**啤酒街**，兩旁林立著特色酒吧。走進**市集廣場**，中央矗立著華沙守護神**美人魚雕像**。最後參觀**居禮夫人故居**（外觀），見證科學家的榮耀。</p>
+            <img class="tour-img" src="https://images.unsplash.com/photo-1572455857811-045fb4255b5d?auto=format&fit=crop&w=800">
+        </section>
+
+        <section id="d3">
+            <h2>Day 3：華沙新、舊城區深度</h2>
+            <span class="spot-title">克拉科夫郊區街 & 聖十字教堂</span>
+            <p class="desc">漫步華沙最美街道，參觀**聖十字教堂**，這裡安放了偉大音樂家**蕭邦的心臟**。隨後造訪**科學文化宮**（外觀）及**新城區**，新城區保有 15 世紀的原貌，是華沙歷史的另一面。</p>
+        </section>
+
+        <section id="d4">
+            <h2>Day 4：哥白尼故鄉與馬爾堡城堡</h2>
+            <p class="desc">前往**托倫**，這裡是天文學家**哥白尼的故鄉**。隨後參觀歐洲最大規模的紅磚城堡──**馬爾堡城堡**，曾為條頓騎士團總部，列為世界文化遺產。</p>
+            <img class="tour-img" src="https://images.unsplash.com/photo-1590059516301-38146747d8f4?auto=format&fit=crop&w=800">
+        </section>
+
+        <section id="d6">
+            <h2>Day 6：克拉科夫 ─ 舊都風華</h2>
+            <span class="spot-title">聖母聖殿教堂 & 號角傳說</span>
+            <p class="desc">擁有 600 多年歷史的紅磚哥德式教堂。每整點會吹響小號，樂聲會突然中斷，是為了紀念 13 世紀蒙古入侵時殉職的號角手。</p>
+            <span class="spot-title">紡織公會會館與鐘樓</span>
+            <p class="desc">主廣場中心的**紡織公會會館**是昔日布料交易中心，鐘樓下有巨大的斷頭雕像「Eros Bendato」，是極具代表性的地標。</p>
+        </section>
+
+        <section id="d10">
+            <h2>Day 10：布拉提拉瓦巡禮</h2>
+            <p class="desc">這座米色與白色大理石交織的優雅城市。參觀**國家劇院**與**布拉提斯拉瓦城堡**。別忘了尋找「工作中的男人」雕像，傳說摸他的頭訴說秘密就能願望成真。</p>
+        </section>
+
+        <section id="d12">
+            <h2>Day 12：布達佩斯精華</h2>
+            <span class="spot-title">菸草街會堂、地下迷宮、音樂之家</span>
+            <p class="desc">造訪歐洲最大的猶太會堂**菸草街會堂**，以及名列世界七大地下景觀的**地下迷宮**。參觀日本建築師藤本壯介設計的**匈牙利音樂之家**，體驗波浪屋頂與大自然的融合。</p>
+            <img class="tour-img" src="https://images.unsplash.com/photo-1551867633-194f125bddfa?auto=format&fit=crop&w=800">
+        </section>
+
+        <section id="d15">
+            <h2>Day 15：返抵桃園</h2>
+            <p class="desc">帶著滿滿的照片與感動回到溫暖的家，結束這趟精彩的波斯匈 15 日深度之旅。</p>
+        </section>
+    </div>
+
+    <div id="food-page" class="page">
+        <h2>🍽️ 推薦餐廳與料理</h2>
+        <div class="info-card">
+            <span class="food-tag">世界之最</span>
+            <span class="spot-title">紐約咖啡館 (New York Café)</span>
+            <p class="desc">位於布達佩斯，被譽為「世界最美咖啡館」。內部金碧輝煌，行程包含每位貴賓**咖啡一杯**，體驗宮殿般的下午茶。</p>
+        </div>
+        <div class="info-card">
+            <span class="food-tag">在地風情</span>
+            <span class="spot-title">布達佩斯中央市場</span>
+            <p class="desc">19世紀新哥德式建築。在這裡可以品嚐正宗匈牙利牛肉湯 (Goulash)，並購買當地的甜椒粉或手工藝品。</p>
+        </div>
+        <div class="info-card">
+            <span class="food-tag">悠閒漫步</span>
+            <span class="spot-title">華沙老城啤酒街 (Piwna Street)</span>
+            <p class="desc">街道兩旁林立特色餐館，是品嚐波蘭在地美食與啤酒的絕佳去處。</p>
+        </div>
+    </div>
+
+    <div id="phrases-page" class="page">
+        <h2>💬 旅途常用語</h2>
+        <div class="info-card" style="border-left: 6px solid #3498db;">
+            <p><strong>🚽 廁所在哪？</strong><br>波蘭: Gdzie jest toaleta?<br>匈牙利: Hol van a mosdó?<br>斯洛伐克: Kde je toaleta?</p>
+        </div>
+        <div class="info-card" style="border-left: 6px solid #2ecc71;">
+            <p><strong>💳 刷卡支付</strong><br>波蘭: Chciałbym zapłacić kartą.<br>匈牙利: Kártyával szeretnék fizetni.</p>
+        </div>
+        <div class="info-card" style="border-left: 6px solid #f1c40f;">
+            <p><strong>🙏 謝謝</strong><br>波蘭: Dziękuję<br>匈牙利: Köszönöm<br>斯洛伐克: Ďakujem</p>
+        </div>
+    </div>
+
+    <div id="google-page" class="page">
+        <h2>🌐 Google 翻譯</h2>
+        <div id="google_translate_element" style="background: white; padding: 20px; border-radius: 12px; border: 1px solid #ddd;"></div>
+        <p class="desc" style="margin-top: 20px;">使用上方工具可切換本手冊語言。若需即時交談，建議手機安裝 Google 翻譯 App 開啟語音模式。</p>
+    </div>
+
+    <div id="emergency-page" class="page">
+        <h2>🚨 緊急聯絡資訊</h2>
+        <div class="info-card" style="border-left: 6px solid #c0392b;">
+            <p><strong>🆘 歐洲通用緊急服務：112</strong></p>
+            <hr>
+            <p><strong>波蘭代表處：</strong>+48 22 213 0030<br>緊急電話：+48 668 133 320</p>
+            <p><strong>匈牙利代表處：</strong>+36 1 266 2893<br>緊急電話：+36 30 964 1561</p>
+            <p><strong>斯洛伐克代表處：</strong>+421 2 5825 3220</p>
+        </div>
+    </div>
+
+    <nav class="bottom-tabs">
+        <button class="tab-item active" onclick="switchMainPage('itinerary', this)">
+            <span class="tab-icon">📅</span><span>行程</span>
+        </button>
+        <button class="tab-item" onclick="switchMainPage('food', this)">
+            <span class="tab-icon">🍽️</span><span>餐飲</span>
+        </button>
+        <button class="tab-item" onclick="switchMainPage('phrases', this)">
+            <span class="tab-icon">💬</span><span>語句</span>
+        </button>
+        <button class="tab-item" onclick="switchMainPage('google', this)">
+            <span class="tab-icon">🌐</span><span>翻譯</span>
+        </button>
+        <button class="tab-item" onclick="switchMainPage('emergency', this)">
+            <span class="tab-icon">🚨</span><span>緊急</span>
+        </button>
+    </nav>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.overlay').classList.toggle('active');
+        }
+        function closeSidebar(title) {
+            document.getElementById('sidebar').classList.remove('active');
+            document.querySelector('.overlay').classList.remove('active');
+            document.getElementById('header-title').innerText = title;
+        }
+        function switchMainPage(pageId, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + '-page').classList.add('active');
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelector('.menu-toggle').style.visibility = (pageId === 'itinerary') ? 'visible' : 'hidden';
+            window.scrollTo(0,0);
+        }
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'zh-TW'}, 'google_translate_element');
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
